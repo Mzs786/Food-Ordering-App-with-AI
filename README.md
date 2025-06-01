@@ -11,13 +11,13 @@ A modern **MERN stack** web application that enables users to order food with th
 - AI-powered chatbot for personalized recommendations and support
 - Real-time order tracking and notifications
 - Responsive design for desktop and mobile
-- Secure payment integration (optional)
+- Secure payment integration
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** React.js, Tailwind CSS (or your CSS framework)
+- **Frontend:** React.js, Tailwind CSS
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
 - **AI:** Integration with AI APIs or chatbot frameworks
