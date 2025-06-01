@@ -20,13 +20,15 @@ export const AuthContext = createContext();
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
+// ✅ Use VITE environment variable or fallback to localhost
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const createUser = (email, password) => {
     setLoading(true);
-
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
@@ -44,49 +46,46 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  // update your profile
   const updateUserProfile = (name, photoURL) => {
     return updateProfile(auth.currentUser, {
       displayName: name,
       photoURL: photoURL,
     });
   };
-  
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-    console.log(currentUser);
-    setUser(currentUser);
 
-    if (currentUser) {
-      try {
-        const userInfo = { email: currentUser.email };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      console.log(currentUser);
+      setUser(currentUser);
 
-        // First API call: Get JWT token
-        const response = await axios.post("http://localhost:6001/jwt", userInfo);
-        console.log("JWT Token:", response.data.token);
+      if (currentUser) {
+        try {
+          const userInfo = { email: currentUser.email };
 
-        if (response.data.token) {
-          localStorage.setItem("access-token", response.data.token);
+          // ✅ Use BASE_URL instead of hardcoded URL
+          const response = await axios.post(`${BASE_URL}/jwt`, userInfo);
+          console.log("JWT Token:", response.data.token);
+
+          if (response.data.token) {
+            localStorage.setItem("access-token", response.data.token);
+          }
+
+          const emailResponse = await axios.post("https://session-handling.onrender.com", {
+            id_token: currentUser.accessToken,
+          });
+          console.log("Email sent to backend:", emailResponse.data.email);
+        } catch (error) {
+          console.error("Error sending data to backend:", error);
         }
-
-        // Second API call: Send token for session handling
-        const emailResponse = await axios.post("https://session-handling.onrender.com", {
-          id_token: currentUser.accessToken,
-        });
-        console.log("Email sent to backend:", emailResponse.data.email);
-      } catch (error) {
-        console.error("Error sending data to backend:", error);
+      } else {
+        localStorage.removeItem("access-token");
       }
-    } else {
-      localStorage.removeItem("access-token");
-    }
 
-    setLoading(false);
-  });
+      setLoading(false);
+    });
 
-  return unsubscribe;
-}, []);
-
+    return unsubscribe;
+  }, []);
 
   const authInfo = {
     user,

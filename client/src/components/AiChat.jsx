@@ -12,12 +12,10 @@ const MessageBubble = ({ role, text }) => {
     >
       <div
         className={`max-w-[75%] rounded-lg p-3 text-sm ${
-          isUser
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 text-gray-800'
+          isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800'
         }`}
       >
-        <p className="break-words">{text}</p>
+        <p className="break-words whitespace-pre-wrap">{text}</p>
       </div>
     </div>
   );
@@ -29,6 +27,8 @@ function Chatbot() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:6001';
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -45,7 +45,7 @@ function Chatbot() {
       text,
       timestamp: new Date().toISOString(),
     };
-    setMessages(prev => [...prev, newMessage]);
+    setMessages((prev) => [...prev, newMessage]);
   }, []);
 
   const sendMessage = useCallback(
@@ -59,31 +59,25 @@ function Chatbot() {
         setInput('');
         setLoading(true);
 
-        const response = await fetch(
-          'http://localhost:6001/chat',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userInput: trimmedInput }),
-          }
-        );
+        const response = await fetch(`${BASE_URL}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userInput: trimmedInput }),
+        });
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const data = await response.json();
-        addMessage('bot', data.response);
+        addMessage('bot', data.response || 'No response from server.');
       } catch (error) {
         console.error('Chat error:', error);
-        addMessage(
-          'bot',
-          'Sorry, I encountered an error. Please try your question again!'
-        );
+        addMessage('bot', 'Sorry, something went wrong. Please try again later.');
       } finally {
         setLoading(false);
         inputRef.current?.focus();
       }
     },
-    [input, loading, addMessage]
+    [input, loading, addMessage, BASE_URL]
   );
 
   const handleKeyPress = (e) => {
@@ -103,11 +97,7 @@ function Chatbot() {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            role={message.role}
-            text={message.text}
-          />
+          <MessageBubble key={message.id} role={message.role} text={message.text} />
         ))}
         <div ref={messagesEndRef} />
         {loading && (
@@ -117,10 +107,7 @@ function Chatbot() {
         )}
       </div>
 
-      <form
-        onSubmit={sendMessage}
-        className="p-4 border-t bg-gray-50"
-      >
+      <form onSubmit={sendMessage} className="p-4 border-t bg-gray-50">
         <div className="flex gap-2">
           <input
             ref={inputRef}

@@ -11,11 +11,17 @@ const CartPage = () => {
   const [cart, refetch] = useCart() || [[], () => {}];
   const { user } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState(cart);
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
 
+  // Sync local cartItems with cart when cart changes
   useEffect(() => {
-    if (user && user.email) {
-      // Fetch cart items from the backend based on user's email
-      axios.get(`http://localhost:6001/carts/${user.email}`)
+    setCartItems(cart);
+  }, [cart]);
+
+  // Fetch cart from backend when user.email changes
+  useEffect(() => {
+    if (user?.email) {
+      axios.get(`${BASE_URL}/carts/${user.email}`)
         .then((response) => {
           setCartItems(response.data);
         })
@@ -23,7 +29,7 @@ const CartPage = () => {
           console.error("Error fetching cart items:", error);
         });
     }
-  }, [user, cart]);
+  }, [user?.email, BASE_URL]);
 
   const calculateTotalPrice = (item) => {
     return item.price * item.quantity;

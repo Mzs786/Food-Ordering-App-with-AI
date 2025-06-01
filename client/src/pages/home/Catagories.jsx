@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../../contexts/AuthProvider';
-import axios from 'axios';
-import { FaRupeeSign, FaHeart } from 'react-icons/fa';
+import React, { useContext, useState, useEffect } from "react";
+import { AuthContext } from "../../contexts/AuthProvider";
+import axios from "axios";
+import { FaRupeeSign, FaHeart } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
-import useCart from '../../hooks/useCart';
+import Swal from "sweetalert2";
+import useCart from "../../hooks/useCart";
 
 const RecommandPage = () => {
   const { user } = useContext(AuthContext);
@@ -14,10 +14,12 @@ const RecommandPage = () => {
   const location = useLocation();
   const [isHeartFilled, setIsHeartFilled] = useState(false);
 
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
+
   useEffect(() => {
     if (user && user.email) {
-      // Fetch the suggested items based on the user's email
-      axios.get(`http://localhost:6001/suggested-items?email=${user.email}`)
+      axios
+        .get(`${BASE_URL}/suggested-items?email=${user.email}`)
         .then((response) => {
           setCategoryItems(response.data);
         })
@@ -25,7 +27,7 @@ const RecommandPage = () => {
           console.error("Error fetching suggested items:", error);
         });
     }
-  }, [user]);
+  }, [user, BASE_URL]);
 
   const handleHeartClick = () => {
     setIsHeartFilled(!isHeartFilled);
@@ -43,9 +45,9 @@ const RecommandPage = () => {
       };
 
       axios
-        .post("http://localhost:6001/carts", cartItem)
-        .then((response) => {
-          refetch(); // refetch cart
+        .post(`${BASE_URL}/carts`, cartItem)
+        .then(() => {
+          refetch();
           Swal.fire({
             position: "center",
             icon: "success",
@@ -55,11 +57,11 @@ const RecommandPage = () => {
           });
         })
         .catch((error) => {
-          console.error(error.response.data.message);
+          console.error(error.response?.data?.message || error.message);
           Swal.fire({
             position: "center",
             icon: "warning",
-            title: `${error.response.data.message}`,
+            title: `${error.response?.data?.message || "Failed to add to cart."}`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -81,53 +83,46 @@ const RecommandPage = () => {
   };
 
   return (
-    <div className='max-w-screen-2xl container mx-auto xl:px-24 px-4 py-16'>
-      <div className='text-center'>
-        <p className='subtitle'>Customer Favorites</p>
-        <h2 className='title'>Recomanded For You</h2>
+    <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 py-16">
+      <div className="text-center">
+        <p className="subtitle">Customer Favorites</p>
+        <h2 className="title">Recommended For You</h2>
       </div>
 
-      {/* Displaying suggested items in card style */}
-      <div className='flex flex-col sm:flex-row flex-wrap gap-8 justify-around items-center mt-12'>
+      <div className="flex flex-col sm:flex-row flex-wrap gap-8 justify-around items-center mt-12">
         {categoryItems.length > 0 ? (
           categoryItems.map((item) => (
-            <div
-              key={item._id}
-              className='card shadow-xl relative mr-5 md:my-5'
-            >
+            <div key={item._id} className="card shadow-xl relative mr-5 md:my-5">
               <div
                 className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-green ${
-                  isHeartFilled ? 'text-rose-500' : 'text-white'
+                  isHeartFilled ? "text-rose-500" : "text-white"
                 }`}
                 onClick={handleHeartClick}
               >
-                <FaHeart className='w-5 h-5 cursor-pointer' />
+                <FaHeart className="w-5 h-5 cursor-pointer" />
               </div>
               <Link to={`/menu/${item._id}`}>
                 <figure>
                   <img
                     src={item.image}
                     alt={item.name}
-                    className='hover:scale-105 transition-all duration-300 md:h-72'
+                    className="hover:scale-105 transition-all duration-300 md:h-72"
                   />
                 </figure>
               </Link>
-              <div className='card-body'>
+              <div className="card-body">
                 <Link to={`/menu/${item._id}`}>
-                  <h2 className='card-title'>{item.name}</h2>
+                  <h2 className="card-title">{item.name}</h2>
                 </Link>
-                <p>{item.category || 'No category'}</p>
-                <div className='flex justify-between items-center mt-2'>
-                  <div className='flex items-center'>
-                    <FaRupeeSign className='mr-1' />
-                    <span className='text-md text-red font-semibold'>
+                <p>{item.category || "No category"}</p>
+                <div className="flex justify-between items-center mt-2">
+                  <div className="flex items-center">
+                    <FaRupeeSign className="mr-1" />
+                    <span className="text-md text-red font-semibold">
                       {item.price.toFixed(2)}
                     </span>
                   </div>
-                  <button
-                    onClick={() => handleAddToCart(item)}
-                    className='btn bg-green text-white'
-                  >
+                  <button onClick={() => handleAddToCart(item)} className="btn bg-green text-white">
                     Add to Cart
                   </button>
                 </div>
@@ -135,12 +130,10 @@ const RecommandPage = () => {
             </div>
           ))
         ) : (
-          <div className='text-center mt-20'>
+          <div className="text-center mt-20">
             <p>No suggested items found.</p>
-            <Link to='/menu'>
-              <button className='btn bg-green text-white mt-3'>
-                Back to Menu
-              </button>
+            <Link to="/menu">
+              <button className="btn bg-green text-white mt-3">Back to Menu</button>
             </Link>
           </div>
         )}

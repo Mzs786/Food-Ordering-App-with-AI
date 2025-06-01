@@ -4,9 +4,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import Swal from "sweetalert2";
 import useCart from "../hooks/useCart";
-import axios from "axios";
-import PropTypes from 'prop-types';
+import useAxiosPublic from "../hooks/useAxiosPublic";
+import PropTypes from "prop-types";
 
+// Heart icon component
 const HeartButton = ({ isFilled, onClick }) => (
   <button
     className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-green ${
@@ -19,19 +20,23 @@ const HeartButton = ({ isFilled, onClick }) => (
   </button>
 );
 
+// Main card component
 const Cards = memo(({ item }) => {
   const { name, image, price, recipe, _id } = item;
   const { user } = useContext(AuthContext);
   const [, refetch] = useCart();
+  const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
   const location = useLocation();
   const [isHeartFilled, setIsHeartFilled] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
+  // Toggle favorite icon
   const handleHeartClick = useCallback(() => {
-    setIsHeartFilled(prev => !prev);
+    setIsHeartFilled((prev) => !prev);
   }, []);
 
+  // Show login alert if not logged in
   const showLoginAlert = useCallback(() => {
     Swal.fire({
       title: "Please login to order food",
@@ -47,9 +52,10 @@ const Cards = memo(({ item }) => {
     });
   }, [navigate, location]);
 
+  // Add to cart logic
   const handleAddToCart = useCallback(async () => {
     if (!user?.email) return showLoginAlert();
-    
+
     const cartItem = {
       menuItemId: _id,
       name,
@@ -61,10 +67,8 @@ const Cards = memo(({ item }) => {
 
     try {
       setIsAddingToCart(true);
-      const response = await axios.post(
-        "http://localhost:6001/carts",
-        cartItem
-      );
+
+      const response = await axiosPublic.post("/carts", cartItem);
 
       if (response.status === 201) {
         await refetch();
@@ -88,12 +92,12 @@ const Cards = memo(({ item }) => {
     } finally {
       setIsAddingToCart(false);
     }
-  }, [user, _id, name, image, price, refetch, showLoginAlert]);
+  }, [user, _id, name, image, price, refetch, showLoginAlert, axiosPublic]);
 
   return (
     <article className="card shadow-xl relative mr-5 md:my-5 hover:shadow-2xl transition-shadow duration-300">
       <HeartButton isFilled={isHeartFilled} onClick={handleHeartClick} />
-      
+
       <Link to={`/menu/${_id}`} className="block">
         <figure className="overflow-hidden">
           <img
@@ -110,7 +114,7 @@ const Cards = memo(({ item }) => {
           <h2 className="card-title text-lg font-bold truncate">{name}</h2>
         </Link>
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">{recipe}</p>
-        
+
         <div className="flex justify-between items-center">
           <div className="flex items-center text-green font-bold">
             <FaRupeeSign className="mr-1" />
@@ -122,7 +126,7 @@ const Cards = memo(({ item }) => {
             className="btn bg-green hover:bg-green-dark text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Add to cart"
           >
-            {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+            {isAddingToCart ? "Adding..." : "Add to Cart"}
           </button>
         </div>
       </div>
@@ -130,6 +134,7 @@ const Cards = memo(({ item }) => {
   );
 });
 
+// PropTypes validation
 Cards.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string.isRequired,

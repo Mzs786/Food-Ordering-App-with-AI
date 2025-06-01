@@ -11,7 +11,7 @@ const port = process.env.PORT || 6001;
 
 // Middleware
 app.use(cors({
-  origin: ['https://sidharth-ee1905.imgbb.com/?sort=date_asc','http://localhost:5173', 'https://final-year-project-alpha-seven.vercel.app','https://aistudio.google.com/prompts/new_chat'], // without the trailing /
+  origin: ['http://localhost:5173', 'https://food-ordering-app-with-ai.vercel.app','https://aistudio.google.com/prompts/new_chat'], // without the trailing /
   methods: ['GET', 'POST', 'PUT', 'DELETE' ,'PATCH'],
 }));
 

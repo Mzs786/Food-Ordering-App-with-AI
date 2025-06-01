@@ -16,20 +16,18 @@ import ManageItems from "../pages/dashboard/admin/ManageItems";
 import UpdateMenu from "../pages/dashboard/admin/UpdateMenu";
 import Payment from "../pages/menuPage/Payment";
 import Chatbot from "../components/AiChat";
+
+// Use the environment variable or fallback to localhost
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
+
 const router = createBrowserRouter([
   // users
   {
     path: "/",
     element: <Main />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/menu",
-        element: <Menu />,
-      },
+      { path: "/", element: <Home /> },
+      { path: "/menu", element: <Menu /> },
       {
         path: "/order",
         element: (
@@ -38,32 +36,15 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "/update-profile",
-        element: <UserProfile />,
-      },
-      {
-        path: "/cart-page",
-        element: <CartPage />,
-      },
-      {
-        path: "/process-checkout",
-        element: <Payment/>
-      },
+      { path: "/update-profile", element: <UserProfile /> },
+      { path: "/cart-page", element: <CartPage /> },
+      { path: "/process-checkout", element: <Payment /> },
     ],
   },
-  {
-    path: "/signup",
-    element: <Signup />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-   {
-        path:"/chat",
-        element: <Chatbot />
-      },
+  { path: "/signup", element: <Signup /> },
+  { path: "/login", element: <Login /> },
+  { path: "/chat", element: <Chatbot /> },
+
   // Admin
   {
     path: "dashboard",
@@ -73,30 +54,16 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
-      {
-        path: "",
-        element: <Dashboard />,
-      },
-      {
-        path: "users",
-        element: <Users />,
-      },
-      {
-        path: "add-menu",
-        element: <AddMenu />,
-      },
-      {
-        path: "manage-items",
-        element: <ManageItems />,
-      },
+      { path: "", element: <Dashboard /> },
+      { path: "users", element: <Users /> },
+      { path: "add-menu", element: <AddMenu /> },
+      { path: "manage-items", element: <ManageItems /> },
       {
         path: "update-menu/:id",
         element: <UpdateMenu />,
         loader: ({ params }) =>
-          fetch(`http://localhost:6001/menu/${params.id}`),
+          fetch(`${BASE_URL}/menu/${params.id}`),
       },
-     
-      
     ],
   },
 ]);

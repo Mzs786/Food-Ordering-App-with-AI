@@ -51,9 +51,11 @@ const Menu = () => {
   useEffect(() => {
     const abortController = new AbortController();
     
+    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
+  
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:6001/menu", {
+        const response = await fetch(`${BASE_URL}/menu`, {
           signal: abortController.signal
         });
         if (!response.ok) throw new Error('Failed to fetch');
@@ -67,10 +69,11 @@ const Menu = () => {
         }
       }
     };
-
+  
     fetchData();
     return () => abortController.abort();
   }, []);
+  
 
   // Handlers with useCallback
   const handleCategoryChange = useCallback((category) => {
