@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #39DB4A;
+  --secondary-color: #FF4141;
+  --text-dark: #1F1F1F;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-dark);
+}
+
+/* Header and Navigation */
+header, nav {
+  z-index: 1000;
+}
+
+/* Typography Utilities */
+.subtitle {
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  font-size: 1rem; /* 16px */
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.875rem; /* 30px */
+  font-size: 2.25rem; /* 36px */
+  font-size: 3rem; /* 48px */
+  font-weight: bold;
+  line-height: 1.25;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Slick Slider Customization */
+.slick-slider {
+  position: relative;
+}
+
+.slick-arrow {
+  width: 2rem; /* 32px */
+  height: 2rem; /* 32px */
+  z-index: 10;
+  &::before {
+    display: none;
+  }
+}
+
+.slick-prev {
+  left: 1rem;
+}
+
+.slick-next {
+  right: 1rem;
+}
+
+.slick-dots {
+  bottom: 1rem;
+
+  li button:before {
+    color: #b3b2b2;
+    font-size: 0.75rem; /* 12px */
+    opacity: 1;
+  }
+
+  li.slick-active button:before {
+    color: #fff;
+  }
+}
+
+/* Component Styles */
+.heartStar {
+  border-radius: 0 1.75rem 0 1.75rem;
+}
+
+.section-container {
+  max-width: 80rem; /* 1280px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem; /* 16px */
+  padding-right: 1rem; /* 16px */
+  padding-left: 6rem; /* 96px */
+  padding-right: 6rem; /* 96px */
+}
+
+/* Footer Adjustments */
+.footer-title {
+  color: currentColor;
+  font-weight: 600;
+  font-size: 1.125rem; /* 18px */
+}
+
+/* Active State */
+.active {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+  text-decoration-thickness: 2px;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 1.5rem; /* 24px */
+  color: var(--primary-color);
+}
+
+/* Number Input Fix */
+input[type="number"] {
+  -moz-appearance: textfield;
+  
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* Media Query Organization */
+@media (min-width: 768px) {
+  .slick-arrow {
+    width: 2.5rem; /* 40px */
+    height: 2.5rem; /* 40px */
+  }
+}

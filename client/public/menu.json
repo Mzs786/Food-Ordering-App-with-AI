@@ -1,0 +1,51 @@
+[
+    {
+      "id": 1,
+      "category": "popular",
+      "name": "Biryani",
+      "image": "/images/recipes/img1.png.avif",
+      "recipe": "A flavorful combination of long-grained basmati rice, tender marinated meat, and aromatic spices slow-cooked to perfection.",
+      "price": 299
+    },
+    {
+      "id": 2,
+      "category": "popular",
+      "name": "Pizza",
+      "image": "/images/recipes/img2.png",
+      "recipe": "A classic Italian delight topped with gooey mozzarella cheese, zesty tomato sauce, and your choice of fresh toppings.",
+      "price": 399
+    },
+    {
+      "id": 3,
+      "category": "popular",
+      "name": "Chicken",
+      "image": "/images/recipes/img3.png",
+      "recipe": "Succulent chicken pieces marinated in a rich blend of spices and grilled to a smoky perfection.",
+      "price": 349
+    },
+    {
+      "id": 4,
+      "category": "popular",
+      "name": "Burger",
+      "image": "/images/recipes/img4.png",
+      "recipe": "A juicy patty sandwiched between freshly baked buns, topped with crisp lettuce, tomato, and tangy sauces.",
+      "price": 199
+    },
+    {
+      "id": 5,
+      "category": "popular",
+      "name": "Idli",
+      "image": "/images/recipes/img5.png",
+      "recipe": "Steamed rice cakes made from a fermented batter of rice and lentils, served with coconut chutney and sambar.",
+      "price": 99
+    },
+    {
+      "id": 6,
+      "category": "popular",
+      "name": "Rolls",
+      "image": "/images/recipes/img6.png",
+      "recipe": "Soft flatbreads rolled around spicy fillings of your choice, be it chicken, paneer, or vegetables.",
+      "price": 149
+    }
+  ]
+  
