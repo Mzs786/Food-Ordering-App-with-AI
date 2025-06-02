@@ -7,7 +7,7 @@ const Order = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("access-token");
 
-  const BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:6001";
+   || "http://localhost:6001";
 
   const { refetch, data: orders = [] } = useQuery({
     queryKey: ["orders", user?.email],
