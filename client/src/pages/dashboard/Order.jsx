@@ -7,7 +7,7 @@ const Order = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("access-token");
 
-   || "http://localhost:6001";
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
 
   const { refetch, data: orders = [] } = useQuery({
     queryKey: ["orders", user?.email],
