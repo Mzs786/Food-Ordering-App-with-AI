@@ -41,7 +41,7 @@ const SpecialDishes = () => {
       .then((res) => res.json())
       .then((data) => {
         const specials = data.filter(
-          (item) => item.category === "popular" && item._id
+          (item) => item.category === "popular" && item.id
         );
         setRecipes(specials);
       });
@@ -112,7 +112,7 @@ const SpecialDishes = () => {
         className="overflow-hidden mt-10 space-x-5"
       >
         {recipes.map((item) => (
-          <Cards item={item} key={item._id} />
+          <Cards item={item} key={item.id} />
         ))}
       </Slider>
     </div>
