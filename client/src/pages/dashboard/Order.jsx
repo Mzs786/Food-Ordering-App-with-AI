@@ -3,12 +3,10 @@ import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 
-// ✅ Assign with safe fallback to avoid build error
-const BASE_URL = import.meta.env ? import.meta.env.VITE_API_URL : "http://localhost:6001";
-
 const Order = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("access-token");
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:6001";
 
   const { refetch, data: orders = [] } = useQuery({
     queryKey: ["orders", user?.email],
@@ -21,7 +19,7 @@ const Order = () => {
       if (!res.ok) throw new Error("Failed to fetch orders");
       return res.json();
     },
-    enabled: !!user?.email,
+    enabled: !!user?.email, // Only fetch if user email is available
   });
 
   const formatDate = (createdAt) => {
@@ -29,14 +27,12 @@ const Order = () => {
     return createdAtDate.toLocaleDateString();
   };
 
-  const totalPrice = orders.reduce((sum, order) => sum + (order.price || 0), 0);
-
   return (
     <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 py-16">
       <div className="bg-gradient-to-r from-[#FAFAFA] to-[#FCFCFC]">
         <div className="py-28 flex flex-col items-center justify-center">
           <div className="text-center px-4 space-y-7">
-            <h2 className="md:text-5xl text-4xl font-bold leading-snug">
+            <h2 className="md:text-5xl text-4xl font-bold md:leading-snug leading-snug">
               Track All your <span className="text-green">Orders</span>
             </h2>
           </div>
@@ -63,7 +59,7 @@ const Order = () => {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td className="font-medium">{formatDate(item.createdAt)}</td>
-                      <td>{item.transactionId || "N/A"}</td>
+                      <td>{item.transitionId}</td>
                       <td>{item.price}</td>
                       <td>{item.status}</td>
                       <td>
@@ -94,7 +90,10 @@ const Order = () => {
               <div className="md:w-1/2 space-y-3">
                 <h3 className="text-lg font-semibold">Shopping Details</h3>
                 <p>Total Items: {orders.length}</p>
-                <p>Total Price: ₹{totalPrice}</p>
+                <p>
+                  Total Price: ₹
+                  {orders.reduce((acc, item) => acc + (item.price || 0), 0)}
+                </p>
               </div>
             </div>
           </>
