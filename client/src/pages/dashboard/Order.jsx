@@ -3,18 +3,12 @@ import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 
-// ✅ Helper to safely get BASE_URL with fallback
-const getBaseUrl = () => {
-  return typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
-    ? import.meta.env.VITE_API_URL
-    : "http://localhost:6001";
-};
+// ✅ Assign with safe fallback to avoid build error
+const BASE_URL = import.meta.env ? import.meta.env.VITE_API_URL : "http://localhost:6001";
 
 const Order = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("access-token");
-
-  const BASE_URL = getBaseUrl();
 
   const { refetch, data: orders = [] } = useQuery({
     queryKey: ["orders", user?.email],
@@ -108,9 +102,7 @@ const Order = () => {
           <div className="text-center mt-20">
             <p>No orders found.</p>
             <Link to="/menu">
-              <button className="btn bg-green text-white mt-3">
-                Back to Menu
-              </button>
+              <button className="btn bg-green text-white mt-3">Back to Menu</button>
             </Link>
           </div>
         )}
