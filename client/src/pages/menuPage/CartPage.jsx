@@ -38,7 +38,7 @@ const CartPage = () => {
   // Handle quantity increase
   const handleIncrease = async (item) => {
     try {
-      const response = await fetch(`http://localhost:6001/carts/${item._id}`, {
+      const response = await fetch(`${BASE_URL}/carts/${item._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +48,7 @@ const CartPage = () => {
 
       if (response.ok) {
         const updatedCart = cartItems.map((cartItem) => {
-          if (cartItem.id === item.id) {
+          if (cartItem._id === item._id) {
             return {
               ...cartItem,
               quantity: cartItem.quantity + 1,
@@ -70,7 +70,7 @@ const CartPage = () => {
     if (item.quantity > 1) {
       try {
         const response = await fetch(
-          `http://localhost:6001/carts/${item._id}`,
+          `${BASE_URL}/carts/${item._id}`,
           {
             method: "PUT",
             headers: {
@@ -82,7 +82,7 @@ const CartPage = () => {
 
         if (response.ok) {
           const updatedCart = cartItems.map((cartItem) => {
-            if (cartItem.id === item.id) {
+            if (cartItem._id === item._id) {
               return {
                 ...cartItem,
                 quantity: cartItem.quantity - 1,
@@ -102,7 +102,7 @@ const CartPage = () => {
   };
 
   // Calculate the cart subtotal
-  const cartSubtotal = Array.isArray(cart) ? cart.reduce((total, item) => total + calculateTotalPrice(item), 0) : 0;
+  const cartSubtotal = Array.isArray(cartItems) ? cartItems.reduce((total, item) => total + calculateTotalPrice(item), 0) : 0;
 
   // Calculate the order total
   const orderTotal = cartSubtotal;
@@ -120,7 +120,7 @@ const CartPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:6001/carts/${item._id}`)
+          .delete(`${BASE_URL}/carts/${item._id}`)
           .then((response) => {
             if (response) {
               refetch();
@@ -148,7 +148,7 @@ const CartPage = () => {
       </div>
 
       {/* Cart Table */}
-      {Array.isArray(cart) && cart.length > 0 ? (
+      {Array.isArray(cartItems) && cartItems.length > 0 ? (
         <div>
           <div className="overflow-x-auto">
             <table className="table">
@@ -163,8 +163,8 @@ const CartPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {cart.map((item, index) => (
-                  <tr key={index}>
+                {cartItems.map((item, index) => (
+                  <tr key={item._id || index}>
                     <td>{index + 1}</td>
                     <td>
                       <div className="avatar">
@@ -187,7 +187,7 @@ const CartPage = () => {
                       <input
                         type="number"
                         value={item.quantity}
-                        onChange={() => console.log(item.quantity)}
+                        readOnly
                         className="w-10 mx-2 text-center overflow-hidden appearance-none"
                       />
                       <button
@@ -223,7 +223,7 @@ const CartPage = () => {
             </div>
             <div className="md:w-1/2 space-y-3">
               <h3 className="text-lg font-semibold">Shopping Details</h3>
-              <p>Total Items: {cart.length}</p>
+              <p>Total Items: {cartItems.length}</p>
               <p>
                 Total Price: <span id="total-price"><FaRupeeSign />{orderTotal.toFixed(2)}</span>
               </p>
